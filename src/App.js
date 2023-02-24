@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import axios from "axios";
 
 function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    axios.get("/todos")
-      .then((response) => setTodos(response.data))
-      .catch((error) => console.error(error));
+    const todos = localStorage.getItem("todos");
+    if (todos === null) {
+      return;
+    }
+    setTodos(JSON.parse(todos));
+    console.log(todos);
   }, []);
 
   const handleAddTodo = () => {
     setTodos([...todos, { id: Date.now(), label: "" }]);
+    console.log(todos);
+    localStorage.setItem("todos", JSON.stringify(todos));
   };
 
   const handleDeleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    // setTodos(todos.filter((todo) => todo.id !== id));
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   const handleEditTodo = (id, label) => {
